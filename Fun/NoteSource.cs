@@ -51,6 +51,8 @@ namespace Fun
             Kboard = Keyboard.GetState();
             lastKboard = Kboard;
         }
+        
+
         /// <summary>
         /// Loads the sprite texture using the provided ContentManager
         /// </summary>
