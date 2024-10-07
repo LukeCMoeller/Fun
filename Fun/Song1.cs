@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using SharpDX.Direct2D1.Effects;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace Fun
 {
@@ -23,7 +25,7 @@ namespace Fun
 
         public Song song;
         public Note[] gameplay;
-        public TimeSpan[] interval;
+
         public Song1(TimeSpan duration, Song s)
         {
             _currentTime = TimeSpan.Zero;
@@ -33,27 +35,17 @@ namespace Fun
             _isRunning = false;
             gameplay = new Note[]
             {
-                new Note(0),
-                new Note(1),
-                new Note(2),
-                new Note(3),
-                new Note(0),
-                new Note(1),
-                new Note(2),
-                new Note(3)
+                new Note(0, TimeSpan.FromSeconds(0)),
+                new Note(1,  TimeSpan.FromSeconds(0)),
+                new Note(2,  TimeSpan.FromSeconds(0)),
+                new Note(3, TimeSpan.FromSeconds(0)),
+                new Note(0, TimeSpan.FromSeconds(1)),
+                new Note(1, TimeSpan.FromSeconds(2)),
+                new Note(2, TimeSpan.FromSeconds(8)),
+                new Note(3, TimeSpan.FromSeconds(1))
             };
-            interval = new TimeSpan[]
-            {
-                TimeSpan.FromSeconds(0),
-                TimeSpan.FromSeconds(1),
-                TimeSpan.FromSeconds(2),
-                TimeSpan.FromSeconds(2),
-                TimeSpan.FromSeconds(1),
-                TimeSpan.FromSeconds(2),
-                TimeSpan.FromSeconds(1),
-                TimeSpan.FromSeconds(1)
-            };
-            activationTimes = new TimeSpan[interval.Length];
+            /*
+            activationTimes = new TimeSpan[gameplay.Length];
             for (int i = 0; i < interval.Length; i++)
             {
                 if (i == 0)
@@ -61,6 +53,7 @@ namespace Fun
                 else
                     activationTimes[i] = activationTimes[i - 1] + interval[i];
             }
+            */
         }
         /// <summary>
         /// Loads the sprite texture using the provided ContentManager
@@ -97,11 +90,30 @@ namespace Fun
             {
                 _currentTime += gameTime.ElapsedGameTime;
                 cumulativeTime += gameTime.ElapsedGameTime;
+                /*              
+                                if (_nextNoteIndex < activationTimes.Length && cumulativeTime >= activationTimes[_nextNoteIndex] )
+                                {
+                                    gameplay[_nextNoteIndex].IsActive = true;
+                                    if()
+                                    _nextNoteIndex++;
+                                }*/
+                /*
+                if(cumulativeTime > TimeSpan.FromSeconds(10)){
+                    int[] h = new int[5];
+                    for(int j = 0; j < 12; j++)
+                    {
+                        h[j] = 0;
 
-                if (_nextNoteIndex < activationTimes.Length && cumulativeTime >= activationTimes[_nextNoteIndex] )
+                    }
+                }*/
+                for(int i = 0; i < gameplay.Length; ++i)
                 {
-                    gameplay[_nextNoteIndex].IsActive = true;
-                    _nextNoteIndex++;
+                    if (gameplay[i].time >= cumulativeTime)
+                    {
+                        gameplay[i].IsActive = true;
+
+                    }
+                    
                 }
                 if (_currentTime >= SongLength)
                 {

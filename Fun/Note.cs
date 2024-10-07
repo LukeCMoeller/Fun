@@ -21,6 +21,7 @@ namespace Fun
     public class Note
     {
         int scaler = 4;
+        public TimeSpan time;
         public bool IsActive { get; set; }
         int currentFrame;
         Rectangle sourceRectangle;
@@ -28,8 +29,9 @@ namespace Fun
         direction d;
         Texture2D texture;
         public BoundingRectangle hitbox;
-        public Note(int i) 
+        public Note(int i, TimeSpan t) 
         {
+            time = t;
             IsActive = false;
             Position.Y = 1010;
             currentFrame = i;
