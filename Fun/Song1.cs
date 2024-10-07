@@ -16,11 +16,8 @@ namespace Fun
     public class Song1
     {
         private TimeSpan SongLength;
-        private TimeSpan _currentTime;
+        private double _currentTime;
         private bool _isRunning;
-        private int _nextNoteIndex;
-
-        private TimeSpan cumulativeTime = TimeSpan.Zero;
         public TimeSpan[] activationTimes;
 
         public Song song;
@@ -28,21 +25,20 @@ namespace Fun
 
         public Song1(TimeSpan duration, Song s)
         {
-            _currentTime = TimeSpan.Zero;
-            _nextNoteIndex = 0;
+            _currentTime = 0;
             song = s;
             SongLength = s.Duration;
             _isRunning = false;
             gameplay = new Note[]
             {
-                new Note(0, TimeSpan.FromSeconds(0)),
-                new Note(1,  TimeSpan.FromSeconds(0)),
-                new Note(2,  TimeSpan.FromSeconds(0)),
-                new Note(3, TimeSpan.FromSeconds(0)),
-                new Note(0, TimeSpan.FromSeconds(1)),
-                new Note(1, TimeSpan.FromSeconds(2)),
-                new Note(2, TimeSpan.FromSeconds(8)),
-                new Note(3, TimeSpan.FromSeconds(1))
+                new Note(0, 0),
+                new Note(1, 0),
+                new Note(2,  0),
+                new Note(3, 0),
+                new Note(0, 1),
+                new Note(1, 2),
+                new Note(2, 5),
+                new Note(3, 1)
             };
             /*
             activationTimes = new TimeSpan[gameplay.Length];
@@ -73,8 +69,8 @@ namespace Fun
             MediaPlayer.Play(song);
             
             _isRunning = true;
-            _currentTime = TimeSpan.Zero;
-            _nextNoteIndex = 0;
+            _currentTime = 0;
+
             
         }
 
@@ -88,8 +84,7 @@ namespace Fun
         {
             if (_isRunning)
             {
-                _currentTime += gameTime.ElapsedGameTime;
-                cumulativeTime += gameTime.ElapsedGameTime;
+
                 /*              
                                 if (_nextNoteIndex < activationTimes.Length && cumulativeTime >= activationTimes[_nextNoteIndex] )
                                 {
@@ -108,18 +103,18 @@ namespace Fun
                 }*/
                 for(int i = 0; i < gameplay.Length; ++i)
                 {
-                    if (gameplay[i].time >= cumulativeTime)
+                    if (gameplay[i].time <= _currentTime)
                     {
                         gameplay[i].IsActive = true;
-
                     }
                     
                 }
-                if (_currentTime >= SongLength)
+                if (_currentTime >= SongLength.TotalSeconds)
                 {
                     Stop(); // Stops the timer when the duration is met
                     OnTimerComplete(gameTime);
                 }
+                _currentTime += gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 
