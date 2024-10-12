@@ -42,7 +42,7 @@ namespace Fun
         /// <summary>
         /// what the scale of note and hitboxes will be. set to 3 so the hitbox of the notes is slightly smaller than the rest
         /// </summary>
-        public int scaler = 3;
+        public int scaler = 4;
         public NoteSource()
         {
             Kboard = Keyboard.GetState();
@@ -103,7 +103,7 @@ namespace Fun
         {
             for (int i = 0; i < 4; i++)
             {
-                spriteBatch.Draw(framesTexture[i], _position[i], framesRectangle[i], framesColor[i], 0, new Vector2(10, 10), scaler + 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(framesTexture[i], _position[i], framesRectangle[i], framesColor[i], 0, new Vector2(10, 10), scaler , SpriteEffects.None, 0);
                 framesColor[i] = Color.White;
             }
         }
