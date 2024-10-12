@@ -10,52 +10,56 @@ using Microsoft.Xna.Framework.Media;
 using SharpDX.Direct2D1.Effects;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
+using System.IO;
+using System.Text.RegularExpressions;
+using SharpDX.MediaFoundation;
 
 namespace Fun
 {
     public class Song1
     {
+
+
+        List<Tuple<int, int, int>> parsedData = new List<Tuple<int, int, int>>();
+
         private TimeSpan SongLength;
         private double _currentTime;
         private bool _isRunning;
         public TimeSpan[] activationTimes;
-
         public Song song;
         public Note[] gameplay;
 
         public Song1(TimeSpan duration, Song s)
         {
+            Import n = new Import();
+            List<Tuple<double, int>> test = new List<Tuple<double, int>>();
+            test = n.LoadDataFromFile();
+
             _currentTime = 0;
             song = s;
             SongLength = s.Duration;
             _isRunning = false;
-            gameplay = new Note[]
-            {
-                new Note(0, 0),
-                new Note(1, 0),
-                new Note(2,  0),
-                new Note(3, 0),
-                new Note(0, 1),
-                new Note(1, 2),
-                new Note(2, 5),
-                new Note(3, 1)
-            };
-            /*
-            activationTimes = new TimeSpan[gameplay.Length];
-            for (int i = 0; i < interval.Length; i++)
-            {
-                if (i == 0)
-                    activationTimes[i] = interval[i];
-                else
-                    activationTimes[i] = activationTimes[i - 1] + interval[i];
-            }
-            */
+
+            double[] spawnIntervals = { 0, 0, 1.25, 0, 0, 0.375, 0, 0, 0.375, 0, 0, 1.25, 0, 0, 0.375, 0.375, 1.25, 0.375, 0.375, 1.25, 0.375, 0.375,0, 0, 0, 1.25, 0.375, 0.375, 1.25, 0.375, 0.375, 1.25, 0.375, 0.375, 1.25 };
+            int[] notedirection = { 0, 1, 3, 3, 2, 1, 1, 2, 3, 0, 2, 3, 2, 3, 0, 2, 0, 3, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 2 };
+            gameplay = new Note[test.Count];
+            int i = 0;
+             foreach(var x in test)
+             {
+                 double activationTime = (i == 0) ? 0 : gameplay[i - 1].time + x.Item1;
+                 gameplay[i] = new Note(x.Item2, (float)activationTime);
+                 i++;
+             }
+
         }
-        /// <summary>
-        /// Loads the sprite texture using the provided ContentManager
-        /// </summary>
-        /// <param name="content">The ContentManager to load with</param>
-        public void LoadContent(ContentManager content)
+
+  
+/// <summary>
+/// Loads the sprite texture using the provided ContentManager
+/// </summary>
+/// <param name="content">The ContentManager to load with</param>
+public void LoadContent(ContentManager content)
         {
             foreach (var note in gameplay)
             {
@@ -70,8 +74,6 @@ namespace Fun
             
             _isRunning = true;
             _currentTime = 0;
-
-            
         }
 
         public void Stop()
@@ -84,37 +86,22 @@ namespace Fun
         {
             if (_isRunning)
             {
-
-                /*              
-                                if (_nextNoteIndex < activationTimes.Length && cumulativeTime >= activationTimes[_nextNoteIndex] )
-                                {
-                                    gameplay[_nextNoteIndex].IsActive = true;
-                                    if()
-                                    _nextNoteIndex++;
-                                }*/
-                /*
-                if(cumulativeTime > TimeSpan.FromSeconds(10)){
-                    int[] h = new int[5];
-                    for(int j = 0; j < 12; j++)
-                    {
-                        h[j] = 0;
-
-                    }
-                }*/
-                for(int i = 0; i < gameplay.Length; ++i)
+                _currentTime += gameTime.ElapsedGameTime.TotalSeconds;
+                for (int i = 0; i < gameplay.Length; ++i)
                 {
-                    if (gameplay[i].time <= _currentTime)
+                    if (!gameplay[i].IsActive && gameplay[i].time <= _currentTime)
                     {
                         gameplay[i].IsActive = true;
+                        gameplay[i].speed = CalculateSpeed(1010, 150);
                     }
-                    
+
                 }
-                if (_currentTime >= SongLength.TotalSeconds)
+                if (_currentTime >= SongLength.TotalSeconds + 2)
                 {
                     Stop(); // Stops the timer when the duration is met
                     OnTimerComplete(gameTime);
                 }
-                _currentTime += gameTime.ElapsedGameTime.TotalSeconds;
+
             }
         }
 
@@ -131,11 +118,12 @@ namespace Fun
             }
             
         }
-
-        public void PlayMusic(Song song)
+        private double CalculateSpeed(double spawnAreaY, double targetAreaY)
         {
-            MediaPlayer.Play(song);
+            double distance = spawnAreaY - targetAreaY;
+            return distance / 2;
         }
+
 
     }
 }

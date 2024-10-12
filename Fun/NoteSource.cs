@@ -33,19 +33,16 @@ namespace Fun
         public BoundingRectangle[] boundingRectangles = new BoundingRectangle[4];
         public KeyboardState Kboard;
         public KeyboardState lastKboard;
-        /// <summary>
-        /// idk what for honistly
-        /// </summary>
-        float timer;
+
         /// <summary>
         /// position of the arrows
         /// </summary>
         public Vector2[] _position = new Vector2[4];
 
         /// <summary>
-        /// what the scale of note and hitboxes will be
+        /// what the scale of note and hitboxes will be. set to 3 so the hitbox of the notes is slightly smaller than the rest
         /// </summary>
-        public int scaler = 4;
+        public int scaler = 3;
         public NoteSource()
         {
             Kboard = Keyboard.GetState();
@@ -81,35 +78,18 @@ namespace Fun
             {
                 framesColor[0] = Color.Purple;
             }
-            if (lastKboard.IsKeyUp(Keys.A))
-            {
-                //logic
-            }
             if (Kboard.IsKeyDown(Keys.Down))
             {
                 framesColor[1] = Color.Blue;
-            }
-            if (lastKboard.IsKeyUp(Keys.S))
-            {
-                //logic
-            }
+            } 
             if (Kboard.IsKeyDown(Keys.Up))
             {
                 framesColor[2] = Color.Green;
-            }
-            if (lastKboard.IsKeyUp(Keys.W))
-            {
-                //logic
             }
             if (Kboard.IsKeyDown(Keys.Right))
             {
                 framesColor[3] = Color.Red;
             }
-            if (lastKboard.IsKeyUp(Keys.D))
-            {
-                //logic
-            }
-
             lastKboard = Kboard;
 
         }
@@ -123,7 +103,7 @@ namespace Fun
         {
             for (int i = 0; i < 4; i++)
             {
-                spriteBatch.Draw(framesTexture[i], _position[i], framesRectangle[i], framesColor[i], 0, new Vector2(10, 10), scaler, SpriteEffects.None, 0);
+                spriteBatch.Draw(framesTexture[i], _position[i], framesRectangle[i], framesColor[i], 0, new Vector2(10, 10), scaler + 1, SpriteEffects.None, 0);
                 framesColor[i] = Color.White;
             }
         }

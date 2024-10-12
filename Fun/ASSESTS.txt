@@ -1,2 +1,4 @@
 https://www.reddit.com/r/FridayNightFunkin/comments/o4uhmn/i_tried_to_remake_the_pixel_arrows_to_make_them/ for the arrows
 song by me
+particle system from Mr.Bean
+chat gpt really helped me make the import file. 

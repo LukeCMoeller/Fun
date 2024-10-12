@@ -11,46 +11,42 @@ using Microsoft.Xna.Framework.Input;
 using CollisionExample.Collisions;
 namespace Fun
 {
-    public enum direction
-    {
-        Left,
-        Down,
-        Up,
-        Right
-    }
-    public class Note
+
+    public class Note 
     {
         int scaler = 4;
         public float time;
+        public double speed { get; set; }
         public bool IsActive { get; set; }
         int currentFrame;
         Rectangle sourceRectangle;
-        Vector2 Position;
-        direction d;
+        public Vector2 Position;
+        public Direction d;
         Texture2D texture;
         public BoundingRectangle hitbox;
+        public bool kill { get; set; }
         public Note(int i, float t) 
         {
             time = t;
             IsActive = false;
+            kill = false;
             Position.Y = 1010;
             currentFrame = i;
-            //dont really need this code as of now. evenutally i may do a thign wher eits like 4 would be 2 notes at once. idk
             if (i == 0)
             {
-                d = direction.Left;
+                d = Direction.Left;
             }
             else if (i == 1)
             {
-                d = direction.Down;
+                d = Direction.Down;
             }
             else if (i == 2)
             {
-                d = direction.Up;
+                d = Direction.Up;
             }
             else if (i == 3)
             {
-                d = direction.Right;
+                d = Direction.Right;
             }
             else
             {
@@ -79,7 +75,8 @@ namespace Fun
         {
             if (IsActive)
             {
-                Position.Y -= 3;
+                Position.Y -= (float)(speed * gameTime.ElapsedGameTime.TotalSeconds);
+                hitbox.Y = Position.Y;
             }
 
         }
@@ -90,17 +87,12 @@ namespace Fun
         /// <param name="spriteBatch">The spritebatch to render with</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            //if not is offscreen
-            if(Position.Y < -50)
-            {
-                IsActive = false;
-                return;
-            }
-            if (IsActive)
+            if (IsActive && kill == false)
             {
                 spriteBatch.Draw(texture, Position, sourceRectangle, Color.White, 0, new Vector2(10, 10), scaler, SpriteEffects.None, 0);
             }
 
         }
+
     }
 }
